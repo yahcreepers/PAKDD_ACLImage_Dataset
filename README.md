@@ -6,4 +6,4 @@
 
 ## Run the code:
 
-`python main.py --model llava --dataset cifar10 --batch_size 8 --seed 1126`
+`python main.py --model llava --dataset cifar10 --batch_size 8 --seed 1126 --num_rounds 3 --output_dir logs/`

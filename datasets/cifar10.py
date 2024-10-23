@@ -96,7 +96,6 @@ class CIFAR10(torchvision.datasets.CIFAR10):
             self.targets = torch.Tensor(self.targets)
         self.num_classes = 10
         self.input_dim = 3 * 32 * 32
-        self.label2id = {self.label_map[i]: i for i in range(len(self.label_map))}
     
     @classmethod
     def build_dataset(self, train, num_cl=1):
