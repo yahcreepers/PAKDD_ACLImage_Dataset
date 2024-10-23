@@ -15,3 +15,6 @@ python main.py \
 --num_rounds 3 \
 --output_dir logs/
 ```
+
+## References:
+https://huggingface.co/docs/transformers/model_doc/llava_next
