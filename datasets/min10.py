@@ -90,6 +90,7 @@ class Micro_ImageNet10(torchvision.datasets.CIFAR10):
             data = pickle.load(f)
         self.targets = torch.Tensor(data["ord_labels"]).view(-1)
         self.data = data["images"]
+        self.names = data["names"]
         self.transform = transform
         self.target_transform = target_transform
         self.num_classes = 10

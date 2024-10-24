@@ -28,4 +28,10 @@ class LLAVA:
     def create_cl_prompt(self, label_map):
         random_label = np.random.choice(label_map, 4, replace=False)
         prompt = f"[INST] <image>\nWhich label does not belong to this image? Please answer with one word from {random_label[0]}, {random_label[1]}, {random_label[2]}, {random_label[3]} [INST]"
+        # prompt = f"[INST] <image>\nWhat is the WRONG label of the picture that we provided in our question? Answer the question using a single label given in the provided list [{random_label[0]}, {random_label[1]}, {random_label[2]}, {random_label[3]}] [INST]"
+        return prompt
+    
+    def create_ol_prompt(self, label_map):
+        labels = ", ".join(label_map)
+        prompt = f"[INST] <image>\nWhich label belongs to this image? Please answer with one word from {labels} [INST]"
         return prompt
