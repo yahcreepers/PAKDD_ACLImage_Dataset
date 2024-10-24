@@ -9,7 +9,8 @@ import pickle
 import gdown
 import os
 
-class CIFAR10(torchvision.datasets.CIFAR10):
+
+class Micro_ImageNet10(torchvision.datasets.CIFAR10):
     """
 
     Real-world complementary-label dataset. Call ``gen_complementary_target()`` if you want to access synthetic complementary labels.
@@ -54,75 +55,69 @@ class CIFAR10(torchvision.datasets.CIFAR10):
     """
 
     label_map = [
-        "airplane", 
-        "automobile", 
-        "bird", 
-        "cat", 
-        "deer", 
-        "dog", 
-        "frog", 
-        "horse", 
-        "ship", 
-        "truck"
+        # "sulfur butterfly", 
+        "butterfly", 
+        "backpack", 
+        "cardigan", 
+        "kimono", 
+        # "magnetic compass", 
+        "compass", 
+        "oboe", 
+        "sandal", 
+        "torch", 
+        "pizza", 
+        "alp", 
     ]
-    
+
     def __init__(
         self,
-        root="./data/cifar10",
+        root="./data/imagenet10",
         train=True,
         transform=None,
         target_transform=None,
         download=True,
     ):
         if train:
-            dataset_path = f"{root}/clcifar10.pkl"
-            if download and not os.path.exists(dataset_path):
-                os.makedirs(root, exist_ok=True)
-                gdown.download(
-                    id="1uNLqmRUkHzZGiSsCtV2-fHoDbtKPnVt2", output=dataset_path
-                )
-            with open(dataset_path, "rb") as f:
-                data = pickle.load(f)
-            self.data = data["images"]
-            self.targets = torch.Tensor(data["ord_labels"]).view(-1)
-            self.transform = transform
-            self.target_transform = target_transform
+            dataset_path = f"{root}/clmicro_imagenet10_train.pkl"
+            gid = "1k02mwMpnBUM9de7TiJLBaCuS8myGuYFx"
         else:
-            super(CIFAR10, self).__init__(
-                root, train, transform, target_transform, download
-            )
-            self.targets = torch.Tensor(self.targets)
+            dataset_path = f"{root}/clmicro_imagenet10_test.pkl"
+            gid = "1e8fZN8swbg9wc6BSOC0A5KHIqCY2C7me"
+        if download and not os.path.exists(dataset_path):
+            os.makedirs(root, exist_ok=True)
+            gdown.download(id=gid, output=dataset_path)
+        with open(dataset_path, "rb") as f:
+            data = pickle.load(f)
+        self.targets = torch.Tensor(data["ord_labels"]).view(-1)
+        self.data = data["images"]
+        self.transform = transform
+        self.target_transform = target_transform
         self.num_classes = 10
-        self.input_dim = 3 * 32 * 32
+        self.input_dim = 3 * 64 * 64
         self.class_to_idx = {self.label_map[i]: i for i in range(len(self.label_map))}
     
     @classmethod
     def build_dataset(self, train):
-        target_transform = lambda x: self.label_map[x.long()]
         if train:
             train_transform = transforms.Compose(
                 [
                     transforms.ToTensor(),
-                    transforms.Normalize(
-                        [0.4914, 0.4822, 0.4465], [0.247, 0.2435, 0.2616]
-                    ),
+                    transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
                 ]
             )
             dataset = self(
                 train=True,
                 # transform=train_transform,
-                # target_transform=target_transform, 
             )
         else:
             test_transform = transforms.Compose(
                 [
                     transforms.ToTensor(),
-                    transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.2435, 0.2616]),
+                    transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
                 ]
             )
             dataset = self(
                 train=False,
                 # transform=test_transform,
-                # target_transform=target_transform, 
             )
         return dataset
