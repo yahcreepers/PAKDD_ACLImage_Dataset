@@ -73,6 +73,7 @@ class CIFAR10(torchvision.datasets.CIFAR10):
         transform=None,
         target_transform=None,
         download=True,
+        long_label=False, 
     ):
         if train:
             dataset_path = f"{root}/clcifar10.pkl"
@@ -95,10 +96,12 @@ class CIFAR10(torchvision.datasets.CIFAR10):
             self.targets = torch.Tensor(self.targets)
         self.num_classes = 10
         self.input_dim = 3 * 32 * 32
+        if not long_label:
+            self.label_map = [label.split(" ")[-1] for label in self.label_map]
         self.class_to_idx = {self.label_map[i]: i for i in range(len(self.label_map))}
     
     @classmethod
-    def build_dataset(self, train):
+    def build_dataset(self, train, long_label):
         target_transform = lambda x: self.label_map[x.long()]
         if train:
             train_transform = transforms.Compose(
@@ -113,6 +116,7 @@ class CIFAR10(torchvision.datasets.CIFAR10):
                 train=True,
                 # transform=train_transform,
                 # target_transform=target_transform, 
+                long_label=long_label, 
             )
         else:
             test_transform = transforms.Compose(
@@ -125,5 +129,6 @@ class CIFAR10(torchvision.datasets.CIFAR10):
                 train=False,
                 # transform=test_transform,
                 # target_transform=target_transform, 
+                long_label=long_label, 
             )
         return dataset

@@ -14,7 +14,8 @@ python main.py \
 --seed 1126 \
 --num_rounds 3 \
 --output_dir logs/ \
---auto_cl
+--auto_cl \ # collecting complementary labels or ordinary labels
+--long_label # using whole label names instead of only one word abbreviation
 ```
 
 or

@@ -10,6 +10,6 @@ D_LIST = {
 
 def prepare_dataset(args):
     dataset = D_LIST[args.dataset]
-    train_set = dataset.build_dataset(train=True)
-    test_set = dataset.build_dataset(train=False)
+    train_set = dataset.build_dataset(train=True, long_label=args.long_label)
+    test_set = dataset.build_dataset(train=False, long_label=args.long_label)
     return train_set, test_set

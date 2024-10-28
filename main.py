@@ -34,6 +34,7 @@ def main(args):
     with tqdm(total=args.num_rounds * len(train_dataloader)) as pbar:
         for round in range(args.num_rounds):
             total_answers = []
+            set_seed(round)
             for step, data in enumerate(train_dataloader):
                 images, labels = data
                 if args.auto_cl:
@@ -41,11 +42,23 @@ def main(args):
                 else:
                     prompts = [model.create_ol_prompt(train_set.label_map) for _ in range(len(images))]
                 answers = model.predict(images, prompts)
-                # print(prompts, answers)
-                answers = [train_set.class_to_idx[answer] for answer in answers]
+                for i, answer in enumerate(answers):
+                    flag = 0
+                    while not flag:
+                        for k, v in train_set.class_to_idx.items():
+                            if answer in k or (answer[-1] == "s" and answer[:-1] in k) or answer.replace(" ", "") in k.replace(" ", ""):
+                                total_answers.append(v)
+                                flag += 1
+                        if not flag:
+                            if args.auto_cl:
+                                prompt = model.create_cl_prompt(train_set.label_map)
+                            else:
+                                prompt = model.create_ol_prompt(train_set.label_map)
+                            print(f"Error: Step {step} {prompt}, {answer}")
+                            answers = model.predict(images[i], prompt)
+                # answers = [train_set.class_to_idx[answer] for answer in answers]
                 # answers = list(np.random.choice(range(10), len(images)))
                 # answers = list(int(np.random.choice(list(set(range(10)) - {labels[i].item()}), 1)) for i in range(len(images)))
-                total_answers.extend(answers)
                 pbar.update(1)
             auto_labels.append(total_answers)
     auto_labels = torch.tensor(auto_labels).t().long()
@@ -79,6 +92,7 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=1126)
     parser.add_argument("--output_dir", type=str, default="logs/")
     parser.add_argument("--auto_cl", action="store_true")
+    parser.add_argument("--long_label", action="store_true")
     args = parser.parse_args()
     return args
 

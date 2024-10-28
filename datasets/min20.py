@@ -55,28 +55,28 @@ class Micro_ImageNet20(torchvision.datasets.CIFAR10):
     """
 
     label_map = [
-        # 'tailed frog', 
-        'frog', 
+        'tailed frog', 
+        # 'frog', 
         'scorpion', 
         'snail', 
-        # 'American lobster', 
-        'lobster', 
+        'american lobster', 
+        # 'lobster', 
         'tabby', 
-        # 'Persian cat', 
-        'cat', 
+        'persian cat', 
+        # 'cat', 
         'gazelle', 
         'chimpanzee', 
         'bannister', 
         'barrel', 
-        # 'Christmas stocking', 
-        'stocking', 
+        'christmas stocking', 
+        # 'stocking', 
         'gasmask', 
         'hourglass', 
         'ipod', 
         'scoreboard', 
         'snorkel', 
-        # 'suspension bridge', 
-        'bridge', 
+        'suspension bridge', 
+        # 'bridge', 
         'torch', 
         'tractor', 
         'triumphal arch'
@@ -89,6 +89,7 @@ class Micro_ImageNet20(torchvision.datasets.CIFAR10):
         transform=None,
         target_transform=None,
         download=True,
+        long_label=False, 
     ):
         if train:
             dataset_path = f"{root}/clmicro_imagenet20_train.pkl"
@@ -108,10 +109,12 @@ class Micro_ImageNet20(torchvision.datasets.CIFAR10):
         self.target_transform = target_transform
         self.num_classes = 20
         self.input_dim = 3 * 64 * 64
+        if not long_label:
+            self.label_map = [label.split(" ")[-1] for label in self.label_map]
         self.class_to_idx = {self.label_map[i]: i for i in range(len(self.label_map))}
     
     @classmethod
-    def build_dataset(self, train):
+    def build_dataset(self, train, long_label):
         if train:
             train_transform = transforms.Compose(
                 [
@@ -122,6 +125,7 @@ class Micro_ImageNet20(torchvision.datasets.CIFAR10):
             dataset = self(
                 train=True,
                 # transform=train_transform,
+                long_label=long_label, 
             )
         else:
             test_transform = transforms.Compose(
@@ -133,5 +137,6 @@ class Micro_ImageNet20(torchvision.datasets.CIFAR10):
             dataset = self(
                 train=False,
                 # transform=test_transform,
+                long_label=long_label, 
             )
         return dataset
