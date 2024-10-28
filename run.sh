@@ -1,10 +1,13 @@
 export CUDA_VISIBLE_DEVICES=$1
 export TOKENIZERS_PARALLELISM=false
 dataset=$2
-logs=$3
+round=$3
+logs=$4
 
 python main.py \
 --dataset ${dataset} \
 --output_dir logs/${logs}/ \
+--batch_size 16 \
+--num_rounds ${round} \
 --auto_cl \
---batch_size 16
+--long_label \

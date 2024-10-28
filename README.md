@@ -20,7 +20,7 @@ python main.py \
 
 or
 
-`./run.sh <device number> <dataset name> <output_dir>`
+`./run.sh <device number> <dataset name> <epoch> <output_dir>`
 
 ## Results:
 https://docs.google.com/spreadsheets/d/1tf-2_AfH_D_ZFmvpxGMCRhlTHaehva4D1EUrhW7efu0/edit?usp=sharing
