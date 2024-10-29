@@ -55,7 +55,7 @@ def main(args):
                             else:
                                 prompt = model.create_ol_prompt(train_set.label_map)
                             print(f"Error: Step {step} {prompt}, {answer}")
-                            answers = model.predict(images[i], prompt)
+                            answer = model.predict(images[i], prompt)[0]
                 # answers = [train_set.class_to_idx[answer] for answer in answers]
                 # answers = list(np.random.choice(range(10), len(images)))
                 # answers = list(int(np.random.choice(list(set(range(10)) - {labels[i].item()}), 1)) for i in range(len(images)))
