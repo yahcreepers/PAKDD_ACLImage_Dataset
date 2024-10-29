@@ -1,7 +1,7 @@
-from .llava import LLAVA
+from .llava_next import LLAVA_NEXT
 
 M_LIST = {
-    "llava": LLAVA, 
+    "llava_next": LLAVA_NEXT, 
 }
 
 def prepare_model(args):

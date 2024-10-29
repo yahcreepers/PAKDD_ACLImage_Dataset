@@ -82,7 +82,7 @@ def main(args):
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument("--model", type=str, default="llava")
+    parser.add_argument("--model", type=str, default="llava_next")
     parser.add_argument(
         "--model_path", type=str, default="llava-hf/llava-v1.6-mistral-7b-hf"
     )
