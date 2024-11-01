@@ -7,7 +7,7 @@ logs=$4
 python main.py \
 --dataset ${dataset} \
 --output_dir logs/${logs}/ \
---batch_size 16 \
+--batch_size 32 \
 --num_rounds ${round} \
---auto_cl \
 --long_label \
+--auto_cl \

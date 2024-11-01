@@ -26,15 +26,18 @@ class LLAVA_NEXT:
         answers = [answer.split("[/INST]")[-1].strip().replace(".", "").lower() for answer in answers]
         return answers
 
-    def create_cl_prompt(self, label_map):
-        random_label = np.random.choice(label_map, 4, replace=False)
+    def create_cl_prompt(self, label_map, cl_set=None):
+        if cl_set:
+            np.random.shuffle(cl_set)
+        else:
+            cl_set = np.random.choice(label_map, 4, replace=False)
         # prompt = f"[INST] <image>\nWe are doing annotator for the complementary label. You play the role of annotator. \
 # Please see the provided image and pickup the label that does not belong to the true label of this image.\
 # Please select 1 out of 4 labels given following labels, each label is separated by \",\": \
-# [{random_label[0]}, {random_label[1]}, {random_label[2]}, {random_label[3]}].\
+# [{cl_set[0]}, {cl_set[1]}, {cl_set[2]}, {cl_set[3]}].\
 # The answer should be only in given words: [/INST]"
-        prompt = f"[INST] <image>\nWhich label does not belong to this image? Please answer with one word from [{random_label[0]}, {random_label[1]}, {random_label[2]}, {random_label[3]}] [/INST]"
-        # prompt = f"[INST] <image>\nWhat is the WRONG label of the picture that we provided in our question? Answer the question using a single label given in the provided list [{random_label[0]}, {random_label[1]}, {random_label[2]}, {random_label[3]}] [/INST]"
+        prompt = f"[INST] <image>\nWhich label does not belong to this image? Please answer with one word from [{cl_set[0]}, {cl_set[1]}, {cl_set[2]}, {cl_set[3]}] [/INST]"
+        # prompt = f"[INST] <image>\nWhat is the WRONG label of the picture that we provided in our question? Answer the question using a single label given in the provided list [{cl_set[0]}, {cl_set[1]}, {cl_set[2]}, {cl_set[3]}] [/INST]"
         return prompt
     
     def create_ol_prompt(self, label_map):

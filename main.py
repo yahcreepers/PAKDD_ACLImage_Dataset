@@ -8,6 +8,7 @@ from datasets import prepare_dataset
 from models import prepare_model
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+import csv
 
 def collate_fn(batch):
     images = []
@@ -30,19 +31,38 @@ def main(args):
     train_dataloader = DataLoader(train_set, batch_size=args.batch_size, collate_fn=collate_fn, shuffle=False, num_workers=8)
     test_dataloader = DataLoader(test_set, batch_size=args.batch_size, collate_fn=collate_fn, shuffle=False, num_workers=8)
     
+    cl_set = {}
+    if args.dataset == "min10" or args.dataset == "min20":
+        with open(f"input_cll_tinyimgnet{args.dataset[-2:]}_uniformly.csv", "r") as f:
+            for i, line in enumerate(f.readlines()):
+                if i == 0:
+                    continue
+                line = line.split(",")
+                for ind in range(10):
+                    if args.long_label:
+                        cls = [l.strip().lower() for l in line[ind * 5 + 1:(ind + 1) * 5]]
+                    else:
+                        cls = [l.split(" ")[-1].strip().lower() for l in line[ind * 5 + 1:(ind + 1) * 5]]
+                    cl_set[os.path.splitext(os.path.basename(line[ind * 5]))[0]] = cls
+    else:
+        for file_name in train_set.names:
+            cl_set[os.path.splitext(os.path.basename(file_name))[0]] = list(np.random.choice(train_set.label_map, 4, replace=False))
+    
     auto_labels = []
+    errors = 0
+    total_steps = 0
     with tqdm(total=args.num_rounds * len(train_dataloader)) as pbar:
         for round in range(args.num_rounds):
             total_answers = []
-            set_seed(round)
             for step, data in enumerate(train_dataloader):
                 images, labels = data
                 if args.auto_cl:
-                    prompts = [model.create_cl_prompt(train_set.label_map) for _ in range(len(images))]
+                    prompts = [model.create_cl_prompt(train_set.label_map, cl_set[os.path.splitext(train_set.names[step * args.batch_size + _])[0]]) for _ in range(len(images))]
                 else:
                     prompts = [model.create_ol_prompt(train_set.label_map) for _ in range(len(images))]
                 answers = model.predict(images, prompts)
-                for i, answer in enumerate(answers):
+                # print(prompts, answers)
+                for i, (image, prompt, answer) in enumerate(zip(images, prompts, answers)):
                     flag = 0
                     while not flag:
                         for k, v in train_set.class_to_idx.items():
@@ -50,12 +70,15 @@ def main(args):
                                 total_answers.append(v)
                                 flag += 1
                         if not flag:
+                            print(f"Error: Step {step} {prompt}, {answer}")
                             if args.auto_cl:
-                                prompt = model.create_cl_prompt(train_set.label_map)
+                                prompt = model.create_cl_prompt(train_set.label_map, cl_set[os.path.splitext(train_set.names[step * args.batch_size + i])[0]])
                             else:
                                 prompt = model.create_ol_prompt(train_set.label_map)
-                            print(f"Error: Step {step} {prompt}, {answer}")
-                            answer = model.predict(images[i], prompt)[0]
+                            errors += 1
+                            answer = model.predict(image, prompt)[0]
+                            flag = 0
+                        total_steps += 1
                 # answers = [train_set.class_to_idx[answer] for answer in answers]
                 # answers = list(np.random.choice(range(10), len(images)))
                 # answers = list(int(np.random.choice(list(set(range(10)) - {labels[i].item()}), 1)) for i in range(len(images)))
@@ -74,10 +97,16 @@ def main(args):
         Q[target.long()] += torch.bincount(cl, minlength=train_set.num_classes)
     Q = Q / Q.sum(dim=1).view(-1, 1)
     print("Noise", noise.item())
+    print("Error", errors / total_steps)
     print("Transition Matrix", Q)
     with open(os.path.join(args.output_dir, "logs.csv"), "w") as f:
         print("Noise", noise.item(), file=f)
+        print("Error", errors / total_steps, file=f)
         print("Transition Matrix", Q, file=f)
+    with open(os.path.join(args.output_dir, "label_set.csv"), "w") as f:
+        for file_name in train_set.names:
+            cl = ",".join([file_name] + cl_set[os.path.splitext(os.path.basename(file_name))[0]])
+            f.write(f"{cl}\n")
 
 
 def parse_args():
