@@ -165,11 +165,11 @@ class CIFAR20(torchvision.datasets.CIFAR100):
         "fish", 
         "flowers", 
         "food containers", 
-        "fruit and vegetables", 
+        "fruit and vegetables and mushrooms", 
         "electrical devices", 
         "furniture", 
         "insects", 
-        "carnivores", 
+        "carnivores and bears", 
         "man-made buildings", 
         "natural scenes", 
         "omnivores and herbivores", 
@@ -179,8 +179,8 @@ class CIFAR20(torchvision.datasets.CIFAR100):
         "reptiles", 
         "small mammals", 
         "trees", 
-        "land vehicles", 
-        "special vehicles"
+        "transportation vehicles", 
+        "non-transportation vehicles"
     ]
     
     def __init__(

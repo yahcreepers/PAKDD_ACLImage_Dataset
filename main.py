@@ -66,7 +66,7 @@ def main(args):
                     flag = 0
                     while not flag:
                         for k, v in train_set.class_to_idx.items():
-                            if answer in k or (answer[-1] == "s" and answer[:-1] in k) or answer.replace(" ", "") in k.replace(" ", ""):
+                            if answer in k or (answer[-1] == "s" and answer[:-1] in k) or answer.replace(" ", "") in k.replace(" ", "") or set(answer.split(" ")) == set(k.split(" ")):
                                 total_answers.append(v)
                                 flag += 1
                         if not flag:
