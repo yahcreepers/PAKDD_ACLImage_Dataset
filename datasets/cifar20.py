@@ -180,7 +180,7 @@ class CIFAR20(torchvision.datasets.CIFAR100):
         "small mammals", 
         "trees", 
         "transportation vehicles", 
-        "non-transportation vehicles"
+        "non-transport vehicles"
     ]
     
     def __init__(
@@ -219,34 +219,45 @@ class CIFAR20(torchvision.datasets.CIFAR100):
         self.class_to_idx = {self.label_map[i]: i for i in range(len(self.label_map))}
     
     @classmethod
-    def build_dataset(self, train, long_label):
-        target_transform = lambda x: self.label_map[x.long()]
+    def build_dataset(self, train, long_label, do_transform=False):
         if train:
-            train_transform = transforms.Compose(
-                [
-                    transforms.ToTensor(),
-                    transforms.Normalize(
-                        [0.4914, 0.4822, 0.4465], [0.247, 0.2435, 0.2616]
-                    ),
-                ]
-            )
-            dataset = self(
-                train=True,
-                # transform=train_transform,
-                # target_transform=target_transform, 
-                long_label=long_label, 
-            )
+            if do_transform:
+                train_transform = transforms.Compose(
+                    [
+                        transforms.RandomHorizontalFlip(),
+                        transforms.RandomCrop(32, padding=4),
+                        transforms.ToTensor(),
+                        transforms.Normalize(
+                            [0.4914, 0.4822, 0.4465], [0.247, 0.2435, 0.2616]
+                        ),
+                    ]
+                )
+                dataset = self(
+                    train=True,
+                    transform=train_transform,
+                    long_label=long_label, 
+                )
+            else:
+                dataset = self(
+                    train=True,
+                    long_label=long_label, 
+                )
         else:
-            test_transform = transforms.Compose(
-                [
-                    transforms.ToTensor(),
-                    transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.2435, 0.2616]),
-                ]
-            )
-            dataset = self(
-                train=False,
-                # transform=test_transform,
-                # target_transform=target_transform, 
-                long_label=long_label, 
-            )
+            if do_transform:
+                test_transform = transforms.Compose(
+                    [
+                        transforms.ToTensor(),
+                        transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.2435, 0.2616]),
+                    ]
+                )
+                dataset = self(
+                    train=False,
+                    transform=test_transform,
+                    long_label=long_label, 
+                )
+            else:
+                dataset = self(
+                    train=False,
+                    long_label=long_label, 
+                )
         return dataset

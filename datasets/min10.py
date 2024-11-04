@@ -101,29 +101,43 @@ class Micro_ImageNet10(torchvision.datasets.CIFAR10):
         self.class_to_idx = {self.label_map[i]: i for i in range(len(self.label_map))}
     
     @classmethod
-    def build_dataset(self, train, long_label):
+    def build_dataset(self, train, long_label, do_transform=False):
         if train:
-            train_transform = transforms.Compose(
-                [
-                    transforms.ToTensor(),
-                    transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
-                ]
-            )
-            dataset = self(
-                train=True,
-                # transform=train_transform,
-                long_label=long_label, 
-            )
+            if do_transform:
+                train_transform = transforms.Compose(
+                    [
+                        transforms.RandomCrop(64, padding=8),
+                        transforms.RandomHorizontalFlip(),
+                        transforms.ToTensor(),
+                        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+                    ]
+                )
+                dataset = self(
+                    train=True,
+                    transform=train_transform,
+                    long_label=long_label, 
+                )
+            else:
+                dataset = self(
+                    train=True,
+                    long_label=long_label, 
+                )
         else:
-            test_transform = transforms.Compose(
-                [
-                    transforms.ToTensor(),
-                    transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
-                ]
-            )
-            dataset = self(
-                train=False,
-                # transform=test_transform,
-                long_label=long_label, 
-            )
+            if do_transform:
+                test_transform = transforms.Compose(
+                    [
+                        transforms.ToTensor(),
+                        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+                    ]
+                )
+                dataset = self(
+                    train=False,
+                    transform=test_transform,
+                    long_label=long_label, 
+                )
+            else:
+                dataset = self(
+                    train=False,
+                    long_label=long_label, 
+                )
         return dataset

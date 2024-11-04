@@ -2,9 +2,17 @@
 
 ## Installation
 
-`pip install -r requirements.txt`
+```
+git clone https://github.com/yahcreepers/auto_labeling.git
+cd auto_labeling
+pip install -r requirements.txt
+cd ..
+git clone https://github.com/ntucllab/libcll.git
+cd libcll
+pip install -e .
+```
 
-## Run the code:
+## For Auto-Labeling
 
 ```
 python main.py \
@@ -20,10 +28,18 @@ python main.py \
 
 or
 
-`./run.sh <device number> <dataset name> <epoch> <output_dir>`
+```
+./run.sh <device number> <dataset name> <epoch> <output_dir>
+```
 
-## Results:
+## For Training
+
+```
+./train.sh <device number> <strategy> <type> <model> <dataset> <label path>
+```
+
+## Results
 https://docs.google.com/spreadsheets/d/1tf-2_AfH_D_ZFmvpxGMCRhlTHaehva4D1EUrhW7efu0/edit?usp=sharing
 
-## References:
+## References
 https://huggingface.co/docs/transformers/model_doc/llava_next

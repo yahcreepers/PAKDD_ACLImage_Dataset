@@ -61,23 +61,26 @@ def main(args):
                 else:
                     prompts = [model.create_ol_prompt(train_set.label_map) for _ in range(len(images))]
                 answers = model.predict(images, prompts)
-                # print(prompts, answers)
                 for i, (image, prompt, answer) in enumerate(zip(images, prompts, answers)):
                     flag = 0
                     while not flag:
-                        for k, v in train_set.class_to_idx.items():
-                            if answer in k or (answer[-1] == "s" and answer[:-1] in k) or answer.replace(" ", "") in k.replace(" ", "") or set(answer.split(" ")) == set(k.split(" ")):
-                                total_answers.append(v)
+                        label = ""
+                        candid_set = cl_set[os.path.splitext(train_set.names[step * args.batch_size + i])[0]]
+                        for candid in candid_set:
+                            if answer in candid or (answer[-1] == "s" and answer[:-1] in candid) or answer.replace(" ", "") in candid.replace(" ", "") or set(answer.split(" ")) == set(candid.split(" ")):
+                                label = train_set.class_to_idx[candid]
                                 flag += 1
-                        if not flag:
-                            print(f"Error: Step {step} {prompt}, {answer}")
+                        if flag != 1:
+                            print(f"Error: Step {step} {prompt} {flag} {candid_set}, {answer}")
                             if args.auto_cl:
-                                prompt = model.create_cl_prompt(train_set.label_map, cl_set[os.path.splitext(train_set.names[step * args.batch_size + i])[0]])
+                                prompt = model.create_cl_prompt(train_set.label_map, candid_set)
                             else:
                                 prompt = model.create_ol_prompt(train_set.label_map)
                             errors += 1
                             answer = model.predict(image, prompt)[0]
                             flag = 0
+                        else:
+                            total_answers.append(label)
                         total_steps += 1
                 # answers = [train_set.class_to_idx[answer] for answer in answers]
                 # answers = list(np.random.choice(range(10), len(images)))
@@ -122,6 +125,7 @@ def parse_args():
     parser.add_argument("--output_dir", type=str, default="logs/")
     parser.add_argument("--auto_cl", action="store_true")
     parser.add_argument("--long_label", action="store_true")
+    parser.add_argument("--do_transform", action="store_true")
     args = parser.parse_args()
     return args
 
