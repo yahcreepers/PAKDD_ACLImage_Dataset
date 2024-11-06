@@ -32,7 +32,9 @@ def main(args):
     test_dataloader = DataLoader(test_set, batch_size=args.batch_size, collate_fn=collate_fn, shuffle=False, num_workers=8)
     
     cl_set = {}
-    if args.dataset == "min10" or args.dataset == "min20":
+    if not args.auto_cl:
+        cl_set = {os.path.splitext(os.path.basename(file_name))[0]: list(train_set.class_to_idx.keys()) for file_name in train_set.names}
+    elif args.dataset == "min10" or args.dataset == "min20":
         with open(f"input_cll_tinyimgnet{args.dataset[-2:]}_uniformly.csv", "r") as f:
             for i, line in enumerate(f.readlines()):
                 if i == 0:
@@ -85,6 +87,7 @@ def main(args):
                 # answers = [train_set.class_to_idx[answer] for answer in answers]
                 # answers = list(np.random.choice(range(10), len(images)))
                 # answers = list(int(np.random.choice(list(set(range(10)) - {labels[i].item()}), 1)) for i in range(len(images)))
+                # total_answers.extend(answers)
                 pbar.update(1)
             auto_labels.append(total_answers)
     auto_labels = torch.tensor(auto_labels).t().long()
@@ -95,15 +98,21 @@ def main(args):
     noise = (train_set.targets.view(-1, 1).expand_as(auto_labels) == auto_labels).float().mean()
     if not args.auto_cl:
         noise = 1 - noise
+        if args.num_rounds > 1:
+            vote_noise = (train_set.targets != auto_labels.mode(-1)[0]).float().mean()
     Q = torch.zeros((train_set.num_classes, train_set.num_classes))
     for target, cl in zip(train_set.targets, auto_labels):
         Q[target.long()] += torch.bincount(cl, minlength=train_set.num_classes)
     Q = Q / Q.sum(dim=1).view(-1, 1)
     print("Noise", noise.item())
+    if args.num_rounds > 1:
+        print("Vote Noise", vote_noise.item())
     print("Error", errors / total_steps)
     print("Transition Matrix", Q)
     with open(os.path.join(args.output_dir, "logs.csv"), "w") as f:
         print("Noise", noise.item(), file=f)
+        if args.num_rounds > 1:
+            print("Vote Noise", vote_noise.item(), file=f)
         print("Error", errors / total_steps, file=f)
         print("Transition Matrix", Q, file=f)
     with open(os.path.join(args.output_dir, "label_set.csv"), "w") as f:
