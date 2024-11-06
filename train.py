@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from datasets import ALDataModule
 from libcll.models import build_model
 from libcll.strategies import build_strategy
+from strategies import Ordinary
 import pytorch_lightning as pl
 from pytorch_lightning import loggers as pl_loggers
 from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
@@ -27,16 +28,27 @@ def main(args):
         num_classes=num_classes,
     )
 
-    strategy = build_strategy(
-        args.strategy,
-        model=model,
-        valid_type=args.valid_type,
-        num_classes=num_classes,
-        type=args.type,
-        lr=args.lr,
-        Q=Q,
-        class_priors=class_priors,
-    )
+    if args.strategy == "Ord":
+        strategy = Ordinary(
+            model=model,
+            valid_type=args.valid_type,
+            num_classes=num_classes,
+            type=args.type,
+            lr=args.lr,
+            Q=Q,
+            class_priors=class_priors,
+        )
+    else:
+        strategy = build_strategy(
+            args.strategy,
+            model=model,
+            valid_type=args.valid_type,
+            num_classes=num_classes,
+            type=args.type,
+            lr=args.lr,
+            Q=Q,
+            class_priors=class_priors,
+        )
 
     tb_logger = pl_loggers.TensorBoardLogger(save_dir=args.output_dir)
     checkpoint_callback_best = ModelCheckpoint(

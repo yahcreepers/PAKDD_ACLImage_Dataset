@@ -5,14 +5,15 @@ tp=$3
 model=$4
 dataset=$5
 label_path=$6
+lr=$7
 
-output_dir="/tmp2/yahcreeper/auto_labeling/train_logs/${strategy}/${dataset}/${strategy}-${tp}-${model}-${dataset}"
+output_dir="train_logs/${strategy}/${dataset}/${strategy}-${tp}-${model}-${dataset}"
 python train.py \
     --strategy ${strategy} \
     --type ${tp} \
     --model ${model} \
     --dataset ${dataset} \
-    --lr 1e-4 \
+    --lr ${lr} \
     --batch_size 256 \
     --valid_type Accuracy \
     --output_dir ${output_dir} \

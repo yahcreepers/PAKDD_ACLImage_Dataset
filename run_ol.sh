@@ -1,0 +1,12 @@
+export CUDA_VISIBLE_DEVICES=$1
+export TOKENIZERS_PARALLELISM=false
+dataset=$2
+round=$3
+log_dir="logs/ol_${dataset}_origin_3"
+
+python main.py \
+--dataset ${dataset} \
+--output_dir ${log_dir} \
+--batch_size 24 \
+--num_rounds ${round} \
+--long_label \

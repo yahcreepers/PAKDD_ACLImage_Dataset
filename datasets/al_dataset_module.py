@@ -33,6 +33,8 @@ class ALDataModule(pl.LightningDataModule):
             labels = [[self.train_set.class_to_idx[l] for l in line.strip().split(",")[1:]] for line in f.readlines()]
         self.train_set.true_targets = self.train_set.targets.clone()
         self.train_set.targets = torch.tensor(labels)
+        if self.args.strategy == "Ord":
+            self.train_set.targets = torch.mode(self.train_set.targets, dim=-1, keepdim=True)[0]
         idx = np.arange(len(self.train_set))
         np.random.shuffle(idx)
         self.train_idx = idx[: int(len(self.train_set) * (1 - self.args.valid_split))]
