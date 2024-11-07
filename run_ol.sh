@@ -2,7 +2,7 @@ export CUDA_VISIBLE_DEVICES=$1
 export TOKENIZERS_PARALLELISM=false
 dataset=$2
 round=$3
-log_dir="logs/ol_${dataset}_origin_3"
+log_dir="logs/ol_${dataset}_origin_${round}_dif"
 
 python main.py \
 --dataset ${dataset} \

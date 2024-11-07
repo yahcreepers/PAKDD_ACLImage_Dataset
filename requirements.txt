@@ -4,3 +4,5 @@ transformers
 accelerate>=0.26.0
 gdown
 pytorch_lightning
+jinja2
+parse

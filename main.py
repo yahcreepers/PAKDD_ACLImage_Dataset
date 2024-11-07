@@ -58,30 +58,37 @@ def main(args):
             total_answers = []
             for step, data in enumerate(train_dataloader):
                 images, labels = data
-                if args.auto_cl:
-                    prompts = [model.create_cl_prompt(train_set.label_map, cl_set[os.path.splitext(train_set.names[step * args.batch_size + _])[0]]) for _ in range(len(images))]
-                else:
-                    prompts = [model.create_ol_prompt(train_set.label_map) for _ in range(len(images))]
-                answers = model.predict(images, prompts)
-                for i, (image, prompt, answer) in enumerate(zip(images, prompts, answers)):
+                prompts = []
+                option_sets = []
+                for _ in range(len(images)):
+                    if args.auto_cl:
+                        prompt, options = model.create_cl_prompt(train_set.label_map, cl_set[os.path.splitext(train_set.names[step * args.batch_size + _])[0]], round)
+                    else:
+                        prompt, options = model.create_ol_prompt(train_set.label_map, round, False)
+                    prompts.append(prompt)
+                    option_sets.append(options)
+                answers = model.predict(images, prompts, option_sets)
+                for i, (image, prompt, options, answer) in enumerate(zip(images, prompts, option_sets, answers)):
                     flag = 0
                     while not flag:
                         label = ""
-                        candid_set = cl_set[os.path.splitext(train_set.names[step * args.batch_size + i])[0]]
-                        for candid in candid_set:
-                            if answer in candid or (answer[-1] == "s" and answer[:-1] in candid) or answer.replace(" ", "") in candid.replace(" ", "") or set(answer.split(" ")) == set(candid.split(" ")):
-                                label = train_set.class_to_idx[candid]
+                        for option in options:
+                            if answer in option or (answer[-1] == "s" and answer[:-1] in option) or answer.replace(" ", "") in option.replace(" ", "") or set(answer.split(" ")) == set(option.split(" ")):
+                                label = train_set.class_to_idx[option]
                                 flag += 1
                         if flag != 1:
-                            print(f"Error: Step {step} {prompt} {flag} {candid_set}, {answer}")
+                            print(f"Error: Step {step} {prompt} {flag} {options}, {answer}")
                             if args.auto_cl:
-                                prompt = model.create_cl_prompt(train_set.label_map, candid_set)
+                                prompt, options = model.create_cl_prompt(train_set.label_map, options, round)
                             else:
-                                prompt = model.create_ol_prompt(train_set.label_map)
+                                prompt, options = model.create_ol_prompt(train_set.label_map, round, True)
                             errors += 1
-                            answer = model.predict(image, prompt)[0]
+                            answer = model.predict(image, prompt, [options])[0]
                             flag = 0
                         else:
+                            # print("Prompt:", prompt)
+                            # print("Options:", options)
+                            # print("Answers:", label)
                             total_answers.append(label)
                         total_steps += 1
                 # answers = [train_set.class_to_idx[answer] for answer in answers]

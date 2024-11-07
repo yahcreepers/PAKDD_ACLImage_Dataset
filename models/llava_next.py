@@ -2,6 +2,7 @@ import torch
 from transformers import LlavaNextProcessor, LlavaNextForConditionalGeneration
 import numpy as np
 import copy
+import parse
 
 
 class LLAVA_NEXT:
@@ -18,31 +19,46 @@ class LLAVA_NEXT:
     def build_model(self, args):
         return self(args.model_path)
     
-    def predict(self, image, prompt):
+    def predict(self, image, prompt, options):
         inputs = self.processor(images=image, text=prompt, padding=True, return_tensors="pt").to(self.model.device)
         inputs["pixel_values"] = inputs["pixel_values"].to(self.model.dtype)
         outputs = self.model.generate(**inputs, max_new_tokens=30, pad_token_id=self.processor.tokenizer.eos_token_id)
         answers = self.processor.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)
-        answers = [answer.split("[/INST]")[-1].strip().replace(".", "").lower() for answer in answers]
-        return answers
+        processed_answers = []
+        format_string = '({0}) {1}'
+        for answer, option in zip(answers, options):
+            answer = answer.split("[/INST]")[-1].strip().replace(".", "").lower()
+            if answer.isdigit():
+                answer = option[int(answer) - 1]
+            else:
+                format_answer = parse.parse(format_string, answer)
+                if format_answer != None:
+                    answer = format_answer[-1]
+            processed_answers.append(answer)
+        return processed_answers
 
-    def create_cl_prompt(self, label_map, cl_set=None):
+    def create_cl_prompt(self, label_map, cl_set=None, round=0):
         if cl_set:
-            np.random.shuffle(cl_set)
+            labels = copy.deepcopy(cl_set)
+            np.random.shuffle(labels)
         else:
-            cl_set = np.random.choice(label_map, 4, replace=False)
-        # prompt = f"[INST] <image>\nWe are doing annotator for the complementary label. You play the role of annotator. \
-# Please see the provided image and pickup the label that does not belong to the true label of this image.\
-# Please select 1 out of 4 labels given following labels, each label is separated by \",\": \
-# [{cl_set[0]}, {cl_set[1]}, {cl_set[2]}, {cl_set[3]}].\
-# The answer should be only in given words: [/INST]"
-        prompt = f"[INST] <image>\nWhich label does not belong to this image? Please answer with one word from [{cl_set[0]}, {cl_set[1]}, {cl_set[2]}, {cl_set[3]}] [/INST]"
-        # prompt = f"[INST] <image>\nWhat is the WRONG label of the picture that we provided in our question? Answer the question using a single label given in the provided list [{cl_set[0]}, {cl_set[1]}, {cl_set[2]}, {cl_set[3]}] [/INST]"
-        return prompt
+            labels = np.random.choice(label_map, 4, replace=False)
+        prompts = [
+            f"[INST] <image>\nWhich label does not belong to this image? Answer the question with a single word from [{labels[0]}, {labels[1]}, {labels[2]}, {labels[3]}] [/INST]", 
+            f"[INST] <image>\nWhich label does not belong to this image? (1) {labels[0]} (2) {labels[1]} (3) {labels[2]} (4) {labels[3]} Answer with the given letter directly [/INST]", 
+            f"[INST] <image>\nWhich label does not belong to this image? (1) {labels[0]} (2) {labels[1]} (3) {labels[2]} (4) {labels[3]} Please provide your answer by stating the letter followed by the full option [/INST]", 
+        ]
+        return prompts[round], labels
     
-    def create_ol_prompt(self, label_map):
+    def create_ol_prompt(self, label_map, round=0, shuffle=False):
         labels = copy.deepcopy(label_map)
-        np.random.shuffle(labels)
-        labels = ", ".join(labels)
-        prompt = f"[INST] <image>\nWhich is the most related label to this image? Please answer with exactly one word from [{labels}] [/INST]"
-        return prompt
+        if shuffle:
+            np.random.shuffle(labels)
+        labels_prompt_1 = ", ".join(labels)
+        labels_prompt_2 = " ".join([f"({i + 1}) {labels[i]}" for i in range(len(labels))])
+        prompts = [
+            f"[INST] <image>\nWhich is the most related label to this image? Answer the question with a single word from [{labels_prompt_1}] [/INST]", 
+            f"[INST] <image>\nWhich is the most related label to this image? {labels_prompt_2} Answer with the given letter directly [/INST]", 
+            f"[INST] <image>\nWhich is the most related label to this image? {labels_prompt_2} Please provide your answer by stating the letter followed by the full option [/INST]", 
+        ]
+        return prompts[round], labels
