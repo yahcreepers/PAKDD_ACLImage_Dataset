@@ -73,11 +73,11 @@ def main(args):
                     while not flag:
                         label = ""
                         for option in options:
-                            if answer in option or (answer[-1] == "s" and answer[:-1] in option) or answer.replace(" ", "") in option.replace(" ", "") or set(answer.split(" ")) == set(option.split(" ")):
+                            if answer in option or option in answer or (answer[-1] == "s" and answer[:-1] in option) or answer.replace(" ", "") in option.replace(" ", "") or set(answer.split(" ")) == set(option.split(" ")):
                                 label = train_set.class_to_idx[option]
                                 flag += 1
                         if flag != 1:
-                            print(f"Error: Step {step} {prompt} {flag} {options}, {answer}")
+                            print(f"Error: Step {step * args.batch_size + i} {prompt} {flag} {options}, {answer}")
                             if args.auto_cl:
                                 prompt, options = model.create_cl_prompt(train_set.label_map, options, round)
                             else:
