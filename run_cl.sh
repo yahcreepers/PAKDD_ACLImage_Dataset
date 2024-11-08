@@ -7,7 +7,7 @@ log_dir="logs/cl_${dataset}_origin_${round}_dif"
 python main.py \
 --dataset ${dataset} \
 --output_dir ${log_dir} \
---batch_size 24 \
+--batch_size 16 \
 --num_rounds ${round} \
 --long_label \
 --auto_cl \
