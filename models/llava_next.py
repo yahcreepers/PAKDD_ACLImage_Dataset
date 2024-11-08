@@ -45,9 +45,9 @@ class LLAVA_NEXT:
         else:
             labels = np.random.choice(label_map, 4, replace=False)
         prompts = [
+            f"[INST] <image>\nWhich label does not belong to this image? (1) {labels[0]} (2) {labels[1]} (3) {labels[2]} (4) {labels[3]} Answer with the given number directly [/INST]", 
+            f"[INST] <image>\nWhich label does not belong to this image? (1) {labels[0]} (2) {labels[1]} (3) {labels[2]} (4) {labels[3]} Please respond with only the number of the correct answer [/INST]", 
             f"[INST] <image>\nWhich label does not belong to this image? Answer the question with a single word from [{labels[0]}, {labels[1]}, {labels[2]}, {labels[3]}] [/INST]", 
-            f"[INST] <image>\nWhich label does not belong to this image? (1) {labels[0]} (2) {labels[1]} (3) {labels[2]} (4) {labels[3]} Answer with the given letter directly [/INST]", 
-            f"[INST] <image>\nWhich label does not belong to this image? (1) {labels[0]} (2) {labels[1]} (3) {labels[2]} (4) {labels[3]} Please provide your answer by stating the letter followed by the full option [/INST]", 
         ]
         return prompts[round], labels
     
@@ -58,8 +58,8 @@ class LLAVA_NEXT:
         labels_prompt_1 = ", ".join(labels)
         labels_prompt_2 = " ".join([f"({i + 1}) {labels[i]}" for i in range(len(labels))])
         prompts = [
+            f"[INST] <image>\nWhich is the most related label to this image? {labels_prompt_2} Answer with the given number directly [/INST]", 
+            f"[INST] <image>\nWhich is the most related label to this image? {labels_prompt_2} Please respond with only the number of the correct answer [/INST]", 
             f"[INST] <image>\nWhich is the most related label to this image? Answer the question with a single word from [{labels_prompt_1}] [/INST]", 
-            f"[INST] <image>\nWhich is the most related label to this image? {labels_prompt_2} Answer with the given letter directly [/INST]", 
-            f"[INST] <image>\nWhich is the most related label to this image? {labels_prompt_2} Please provide your answer by stating the letter followed by the full option [/INST]", 
         ]
         return prompts[round], labels

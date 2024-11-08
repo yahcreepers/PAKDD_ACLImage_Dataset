@@ -8,6 +8,7 @@ from tqdm import tqdm
 import pickle
 import gdown
 import os
+from .randomaugment import RandomAugment
 
 class CIFAR10(torchvision.datasets.CIFAR10):
     """
@@ -106,6 +107,7 @@ class CIFAR10(torchvision.datasets.CIFAR10):
             if do_transform:
                 train_transform = transforms.Compose(
                     [
+                        RandomAugment(3, 5), 
                         transforms.RandomHorizontalFlip(),
                         transforms.RandomCrop(32, padding=4),
                         transforms.ToTensor(),

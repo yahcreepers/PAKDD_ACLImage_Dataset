@@ -8,6 +8,7 @@ from tqdm import tqdm
 import pickle
 import gdown
 import os
+from .randomaugment import RandomAugment
 
 
 class Micro_ImageNet10(torchvision.datasets.CIFAR10):
@@ -106,6 +107,7 @@ class Micro_ImageNet10(torchvision.datasets.CIFAR10):
             if do_transform:
                 train_transform = transforms.Compose(
                     [
+                        RandomAugment(3, 5), 
                         transforms.RandomCrop(64, padding=8),
                         transforms.RandomHorizontalFlip(),
                         transforms.ToTensor(),
@@ -141,3 +143,6 @@ class Micro_ImageNet10(torchvision.datasets.CIFAR10):
                     long_label=long_label, 
                 )
         return dataset
+
+    # def __len__(self):
+    #     return 10

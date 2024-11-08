@@ -2,10 +2,10 @@ export CUDA_VISIBLE_DEVICES=$1
 
 strategy=$2
 tp=$3
-model=ResNet18
-dataset=$4
-label_path=$5
-lr=$6
+model=$4
+dataset=$5
+label_path=$6
+lr=$7
 
 output_dir="train_logs/${strategy}/${dataset}/${strategy}-${tp}-${model}-${dataset}"
 python train.py \
@@ -15,7 +15,6 @@ python train.py \
     --dataset ${dataset} \
     --lr ${lr} \
     --batch_size 256 \
-    --epoch 600 \
     --valid_type Accuracy \
     --output_dir ${output_dir} \
     --label_path ${label_path} \
