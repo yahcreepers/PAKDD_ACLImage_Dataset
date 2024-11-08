@@ -25,15 +25,16 @@ class LLAVA_NEXT:
         outputs = self.model.generate(**inputs, max_new_tokens=30, pad_token_id=self.processor.tokenizer.eos_token_id)
         answers = self.processor.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)
         processed_answers = []
-        format_string = '({0}) {1}'
+        format_strings = ['({0}) {1}', '({0})']
         for answer, option in zip(answers, options):
             answer = answer.split("[/INST]")[-1].strip().replace(".", "").lower()
-            if answer.isdigit():
-                answer = option[int(answer) - 1]
-            else:
+            for format_string in format_strings:
                 format_answer = parse.parse(format_string, answer)
                 if format_answer != None:
                     answer = format_answer[-1]
+                    break
+            if answer.isdigit():
+                answer = option[int(answer) - 1]
             processed_answers.append(answer)
         return processed_answers
 
