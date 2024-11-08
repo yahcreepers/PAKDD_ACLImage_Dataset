@@ -112,13 +112,13 @@ def main(args):
         Q[target.long()] += torch.bincount(cl, minlength=train_set.num_classes)
     Q = Q / Q.sum(dim=1).view(-1, 1)
     print("Noise", noise.item())
-    if args.num_rounds > 1:
+    if not args.auto_cl and args.num_rounds > 1:
         print("Vote Noise", vote_noise.item())
     print("Error", errors / total_steps)
     print("Transition Matrix", Q)
     with open(os.path.join(args.output_dir, "logs.csv"), "w") as f:
         print("Noise", noise.item(), file=f)
-        if args.num_rounds > 1:
+        if not args.auto_cl and args.num_rounds > 1:
             print("Vote Noise", vote_noise.item(), file=f)
         print("Error", errors / total_steps, file=f)
         print("Transition Matrix", Q, file=f)
