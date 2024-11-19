@@ -103,6 +103,7 @@ class Micro_ImageNet20(torchvision.datasets.CIFAR10):
             gdown.download(id=gid, output=dataset_path)
         with open(dataset_path, "rb") as f:
             data = pickle.load(f)
+        self.cls = torch.Tensor(data["cl_labels"])
         self.targets = torch.Tensor(data["ord_labels"]).view(-1)
         self.data = data["images"]
         self.names = data["names"]
@@ -120,7 +121,7 @@ class Micro_ImageNet20(torchvision.datasets.CIFAR10):
             if do_transform:
                 train_transform = transforms.Compose(
                     [
-                        RandomAugment(3, 5), 
+                        # RandomAugment(3, 5), 
                         transforms.RandomCrop(64, padding=8),
                         transforms.RandomHorizontalFlip(),
                         transforms.ToTensor(),

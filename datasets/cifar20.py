@@ -183,6 +183,28 @@ class CIFAR20(torchvision.datasets.CIFAR100):
         "transportation vehicles", 
         "non-transport vehicles"
     ]
+    # label_map = [
+    #     "beaver, dolphin, otter, seal, whale",
+    #     "fish, flatfish, ray, shark, trout",
+    #     "flowers, orchids, poppies, roses, sunflowers, tulips",
+    #     "bottles, bowls, cans, cups, plates",
+    #     "fruit, vegetables and mushrooms apples, mushrooms, oranges, pears, sweet peppers",
+    #     "clock, computer keyboard, lamp, telephone, television",
+    #     "bed, chair, couch, table, wardrobe",
+    #     "insects, bee, beetle, butterfly, caterpillar, cockroach",
+    #     "carnivores, bear, leopard, lion, tiger, wolf",
+    #     "bridge, castle, house, road, skyscraper",
+    #     "cloud, forest, mountain, plain, sea",
+    #     "camel, cattle, chimpanzee, elephant, kangaroo",
+    #     "fox, porcupine, possum, raccoon, skunk",
+    #     "crab, lobster, snail, spider, worm",
+    #     "people, baby, boy, girl, man, woman",
+    #     "reptiles, crocodile, dinosaur, lizard, snake, turtle",
+    #     "hamster, mouse, rabbit, shrew, squirrel",
+    #     "trees, maple, oak, palm, pine, willow",
+    #     "bicycle, bus, motorcycle, pickup truck, train, streetcar",
+    #     "lawn-mower, rocket, tank, tractor",
+    # ]
     
     def __init__(
         self,
@@ -204,6 +226,7 @@ class CIFAR20(torchvision.datasets.CIFAR100):
                 data = pickle.load(f)
             self.data = data["images"]
             self.names = data["names"]
+            self.cls = torch.Tensor(data["cl_labels"])
             self.targets = torch.Tensor(data["ord_labels"]).view(-1)
             self.transform = transform
             self.target_transform = target_transform
@@ -225,7 +248,7 @@ class CIFAR20(torchvision.datasets.CIFAR100):
             if do_transform:
                 train_transform = transforms.Compose(
                     [
-                        RandomAugment(3, 5), 
+                        # RandomAugment(3, 5), 
                         transforms.RandomHorizontalFlip(),
                         transforms.RandomCrop(32, padding=4),
                         transforms.ToTensor(),

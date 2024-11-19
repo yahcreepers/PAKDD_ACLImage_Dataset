@@ -5,6 +5,7 @@ import numpy as np
 import os
 from .utils import prepare_dataset
 from libcll.datasets.utils import collate_fn_multi_label, collate_fn_one_hot
+from .cifar20 import _cifar100_to_cifar20
 
 class IndexSampler(Sampler):
     def __init__(self, index):
@@ -29,12 +30,58 @@ class ALDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
         pl.seed_everything(self.args.seed, workers=True)
         self.train_set, self.test_set = prepare_dataset(self.args)
-        with open(os.path.join(self.args.label_path, "auto_labels.csv"), "r") as f:
-            labels = [[self.train_set.class_to_idx[l] for l in line.strip().split(",")[1:]] for line in f.readlines()]
         self.train_set.true_targets = self.train_set.targets.clone()
-        self.train_set.targets = torch.tensor(labels)
-        if self.args.strategy == "Ord":
-            self.train_set.targets = torch.mode(self.train_set.targets, dim=-1, keepdim=True)[0]
+        if self.args.dataset.startswith("cl"):
+            self.train_set.targets = self.train_set.cls
+        elif self.args.dataset == "cifar10n":
+            labels = torch.load('./data/CIFAR-10_human.pt')
+            if self.args.type == "aggre":
+                label_type = "aggre_label"
+            if self.args.type == "worst":
+                label_type = "worse_label"
+            self.train_set.targets = torch.tensor(labels[label_type]).view(-1, 1)
+            # tt = torch.tensor(labels['clean_label'])
+            # print((self.train_set.true_targets == tt).float().mean())
+        elif self.args.dataset == "cifar20n":
+            labels = torch.load('./data/CIFAR-100_human_clordered.pt')
+            self.train_set.targets = torch.tensor([_cifar100_to_cifar20(i) for i in labels['noisy_label']]).view(-1, 1)
+            # tt = torch.tensor([_cifar100_to_cifar20(i) for i in labels['clean_label']]).view(-1, 1)
+            # print(self.train_set.targets.shape, self.train_set.true_targets.shape)
+            # print((self.train_set.targets == self.train_set.true_targets.view(-1, 1)).float().mean())
+            # print(tt)
+            # print(self.train_set.true_targets)
+            # print((self.train_set.targets == tt).float().mean())
+            # exit()
+        elif self.args.dataset == "cifar20" and self.args.strategy == "Ord":
+            with open(os.path.join(self.args.label_path, "auto_labels.csv"), "r") as f:
+                labels = [[self.train_set.class_to_idx[l] for l in line.strip().split(",", 1)[1:]] for line in f.readlines()]
+            self.train_set.targets = torch.tensor(labels).view(-1, 1)
+        else:
+            with open(os.path.join(self.args.label_path, "auto_labels.csv"), "r") as f:
+                labels = [[self.train_set.class_to_idx[l] for l in line.strip().split(",")[1:]] for line in f.readlines()]
+            self.train_set.targets = torch.tensor(labels)
+            if self.args.strategy == "Ord":
+                rng = np.random.default_rng(seed=1126)
+                train_noisy_labels = []
+                for i, label in enumerate(self.train_set.targets):
+                    if "aggre" in self.args.type:
+                        if label[0] != label[1] and label[1] != label[2] and label[0] != label[2]:
+                            l = rng.choice(label, 1, replace=False)
+                        else:
+                            l = torch.mode(label)[0]
+                    elif "worst" in self.args.type:
+                        label_set = [l for l in label if l != self.train_set.true_targets[i]]
+                        if len(label_set):
+                            l = rng.choice(label_set, 1, replace=False)
+                        else:
+                            l = label[0]
+                    train_noisy_labels.append(int(l))
+                for i in range(self.train_set.targets.shape[-1]):
+                    print(f"Sep Noise Rate {i}", (self.train_set.targets[:,i] != self.train_set.true_targets).float().mean())
+                self.train_set.targets = torch.tensor(train_noisy_labels)
+                print(f"Total Noise Rate {self.args.type}", (self.train_set.targets != self.train_set.true_targets).float().mean())
+                self.train_set.targets = self.train_set.targets.view(-1, 1)
+
         idx = np.arange(len(self.train_set))
         np.random.shuffle(idx)
         self.train_idx = idx[: int(len(self.train_set) * (1 - self.args.valid_split))]

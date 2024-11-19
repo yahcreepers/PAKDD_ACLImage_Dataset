@@ -87,6 +87,7 @@ class CIFAR10(torchvision.datasets.CIFAR10):
                 data = pickle.load(f)
             self.data = data["images"]
             self.names = data["names"]
+            self.cls = torch.Tensor(data["cl_labels"])
             self.targets = torch.Tensor(data["ord_labels"]).view(-1)
             self.transform = transform
             self.target_transform = target_transform
@@ -107,7 +108,7 @@ class CIFAR10(torchvision.datasets.CIFAR10):
             if do_transform:
                 train_transform = transforms.Compose(
                     [
-                        RandomAugment(3, 5), 
+                        # RandomAugment(3, 5), 
                         transforms.RandomHorizontalFlip(),
                         transforms.RandomCrop(32, padding=4),
                         transforms.ToTensor(),

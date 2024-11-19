@@ -125,4 +125,6 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     os.makedirs(args.output_dir, exist_ok=True)
+    if args.strategy == "URE":
+        args.seed = 112
     main(args)
