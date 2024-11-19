@@ -39,7 +39,7 @@ for strategy in ${strategies[@]}; do
         valid_type="Accuracy"
         types=(${type})
         for t in ${types[@]}; do
-            lrs=($(cat "/work/u8273333/libcll/logs/${strategy}/${strategy}-${t}-multi-hard.txt"))
+            lrs=($(cat "train_logs/${strategy}-${t}-multi-hard.txt"))
             echo ${lrs[@]}
             if [[ $dataset == "min10" ]] || [[ $dataset == "clmin10" ]]; then
                 lr=${lrs[0]}
