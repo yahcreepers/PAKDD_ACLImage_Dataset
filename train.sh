@@ -9,7 +9,7 @@ lr=$7
 batch_size=$8
 seed=$9
 
-output_dir="train_logs/${strategy}/${dataset}/${strategy}-${tp}-${model}-${dataset}-${lr}"
+output_dir="train_logs/${strategy}/${dataset}/${strategy}-${tp}-${model}-${dataset}-${lr}-${seed}"
 # output_dir="train_logs/test/"
 python train.py \
     --strategy ${strategy} \
