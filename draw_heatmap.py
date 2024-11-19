@@ -18,56 +18,58 @@ pattern = r"Transition Matrix tensor\(\[([\s\S]+?)\]\)"
 match = re.search(pattern, data)
 label_map = []
 if "min20" in file_path:
-    label_map = [
-        'tailed frog', 
-        # 'frog', 
-        'scorpion', 
-        'snail', 
-        'american lobster', 
-        # 'lobster', 
-        'tabby', 
-        'persian cat', 
-        # 'cat', 
-        'gazelle', 
-        'chimpanzee', 
-        'bannister', 
-        'barrel', 
-        'christmas stocking', 
-        # 'stocking', 
-        'gasmask', 
-        'hourglass', 
-        'ipod', 
-        'scoreboard', 
-        'snorkel', 
-        'suspension bridge', 
-        # 'bridge', 
-        'torch', 
-        'tractor', 
-        'triumphal arch'
-    ]
+    # label_map = [
+    #     'tailed frog', 
+    #     # 'frog', 
+    #     'scorpion', 
+    #     'snail', 
+    #     'american lobster', 
+    #     # 'lobster', 
+    #     'tabby', 
+    #     'persian cat', 
+    #     # 'cat', 
+    #     'gazelle', 
+    #     'chimpanzee', 
+    #     'bannister', 
+    #     'barrel', 
+    #     'christmas stocking', 
+    #     # 'stocking', 
+    #     'gasmask', 
+    #     'hourglass', 
+    #     'ipod', 
+    #     'scoreboard', 
+    #     'snorkel', 
+    #     'suspension bridge', 
+    #     # 'bridge', 
+    #     'torch', 
+    #     'tractor', 
+    #     'triumphal arch'
+    # ]
+    label_map = [str(i+1) for i in range(20)]
 elif "cifar20" in file_path:
-    label_map = [
-        "aquatic mammals", 
-        "fish", 
-        "flowers", 
-        "food containers", 
-        "fruit and vegetables and mushrooms", 
-        "electrical devices", 
-        "furniture", 
-        "insects", 
-        "carnivores and bears", 
-        "man-made buildings", 
-        "natural scenes", 
-        "omnivores and herbivores", 
-        "medium-sized mammals", 
-        "invertebrates", 
-        "people", 
-        "reptiles", 
-        "small mammals", 
-        "trees", 
-        "transportation vehicles", 
-        "non-transport vehicles"
-    ]
+    # label_map = [
+    #     "aquatic mammals", 
+    #     "fish", 
+    #     "flowers", 
+    #     "food containers", 
+    #     "fruit and vegetables and mushrooms", 
+    #     "electrical devices", 
+    #     "furniture", 
+    #     "insects", 
+    #     "carnivores and bears", 
+    #     "man-made buildings", 
+    #     "natural scenes", 
+    #     "omnivores and herbivores", 
+    #     "medium-sized mammals", 
+    #     "invertebrates", 
+    #     "people", 
+    #     "reptiles", 
+    #     "small mammals", 
+    #     "trees", 
+    #     "transportation vehicles", 
+    #     "non-transport vehicles"
+    # ]
+    label_map = [str(i+1) for i in range(20)]
 elif "min10" in file_path:
     label_map = [
         "sulphur butterfly", 
