@@ -24,4 +24,5 @@ python train.py \
     --label_path ${label_path} \
     --long_label \
     --do_transform \
+    --seed ${seed} \
     
