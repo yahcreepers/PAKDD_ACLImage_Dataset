@@ -18,6 +18,9 @@ def main(args):
     input_dim, num_classes = al_data_module.train_set.input_dim, al_data_module.train_set.num_classes
     Q, class_priors = al_data_module.get_distribution_info()
     print(Q, class_priors)
+    if args.cleaning:
+        exit()
+        # pass
 
     pl.seed_everything(args.seed, workers=True)
     
@@ -119,12 +122,13 @@ def parse_args():
     parser.add_argument("--long_label", action="store_true")
     parser.add_argument("--do_transform", action="store_true")
     parser.add_argument("--label_path", type=str, default="cifar10")
+    parser.add_argument("--num_cl", type=int, default=3)
+    parser.add_argument("--cleaning_rate", type=float, default=0)
+    parser.add_argument("--cleaning", action="store_true")
     args = parser.parse_args()
     return args
 
 if __name__ == "__main__":
     args = parse_args()
     os.makedirs(args.output_dir, exist_ok=True)
-    if args.strategy == "URE":
-        args.seed = 112
     main(args)

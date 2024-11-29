@@ -22,6 +22,10 @@ class LLAVA_NEXT:
     def predict(self, image, prompt, options):
         inputs = self.processor(images=image, text=prompt, padding=True, return_tensors="pt").to(self.model.device)
         inputs["pixel_values"] = inputs["pixel_values"].to(self.model.dtype)
+        # print(prompt[0])
+        # print(inputs['input_ids'].shape)
+        # print(inputs['pixel_values'].shape)
+        # exit()
         outputs = self.model.generate(**inputs, max_new_tokens=30, pad_token_id=self.processor.tokenizer.eos_token_id)
         answers = self.processor.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)
         processed_answers = []
@@ -52,6 +56,15 @@ class LLAVA_NEXT:
             f"[INST] <image>\nWhich label does not belong to this image? Answer the question with a single word from [{labels[0]}, {labels[1]}, {labels[2]}, {labels[3]}] [/INST]", 
         ]
         return prompts[2], labels
+    
+    def create_cl_prompt_WWW(self, label_map, cl_set=None, round=0):
+        if cl_set:
+            labels = copy.deepcopy(cl_set)
+            np.random.shuffle(labels)
+        else:
+            labels = np.random.choice(label_map, 4, replace=False)
+        prompt = f"[INST] <image>\nWhat is the WRONG label of the picture that we provided in our question? Answer the question using a single label given in the provided list: [{labels[0]}, {labels[1]}, {labels[2]}, {labels[3]}]. [/INST]"
+        return prompt, labels
     
     def create_ol_prompt(self, label_map, round=0, shuffle=False):
         labels = copy.deepcopy(label_map)

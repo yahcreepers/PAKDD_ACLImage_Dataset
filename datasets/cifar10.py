@@ -146,3 +146,6 @@ class CIFAR10(torchvision.datasets.CIFAR10):
                     long_label=long_label, 
                 )
         return dataset
+
+    # def __len__(self):
+    #     return 10

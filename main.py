@@ -51,7 +51,7 @@ def main(args):
                         cl_set[os.path.splitext(os.path.basename(line[ind * 5]))[0]] = [cls for _ in range(args.num_labels)]
     else:
         for file_name in train_set.names:
-            cl_set[os.path.splitext(os.path.basename(file_name))[0]] = [list(np.random.choice(train_set.label_map, 4, replace=False)) for _ in range(3)]
+            cl_set[os.path.splitext(os.path.basename(file_name))[0]] = [list(np.random.choice(train_set.label_map, 4, replace=False)) for _ in range(args.num_rounds)]
     with open(os.path.join(args.output_dir, "label_set.csv"), "w") as f:
         for file_name in train_set.names:
             cl = ",".join([file_name] + ["\"" + ",".join(cl_set[os.path.splitext(os.path.basename(file_name))[0]][i]) + "\"" for i in range(args.num_rounds)])
@@ -103,18 +103,10 @@ def main(args):
                             flag = 0
                             p = 1
                         else:
-                            # print("Prompt:", prompt)
-                            # print("Options:", options)
-                            # print("Answers:", label)
-                            # print(answer)
                             if p:
                                 print(f"Fixed: Step {step * args.batch_size + i} {prompt} {flag} {options}, {answer}")
                             total_answers.append(label)
                         total_steps += 1
-                # answers = [train_set.class_to_idx[answer] for answer in answers]
-                # answers = list(np.random.choice(range(10), len(images)))
-                # answers = list(int(np.random.choice(list(set(range(10)) - {labels[i].item()}), 1)) for i in range(len(images)))
-                # total_answers.extend(answers)
                 if (step + 1) % 100 == 0:
                     T = torch.tensor(total_answers)
                     noise = (train_set.targets[:len(T)] == T).float().mean()

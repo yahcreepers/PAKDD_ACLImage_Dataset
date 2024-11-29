@@ -31,7 +31,9 @@ class ALDataModule(pl.LightningDataModule):
         pl.seed_everything(self.args.seed, workers=True)
         self.train_set, self.test_set = prepare_dataset(self.args)
         self.train_set.true_targets = self.train_set.targets.clone()
-        if self.args.dataset.startswith("cl"):
+        if self.args.dataset.startswith("ol"):
+            self.train_set.targets = self.train_set.targets.view(-1, 1).long()
+        elif self.args.dataset.startswith("cl"):
             self.train_set.targets = self.train_set.cls
         elif self.args.dataset == "cifar10n":
             labels = torch.load('./data/CIFAR-10_human.pt')
@@ -59,7 +61,7 @@ class ALDataModule(pl.LightningDataModule):
         else:
             with open(os.path.join(self.args.label_path, "auto_labels.csv"), "r") as f:
                 labels = [[self.train_set.class_to_idx[l] for l in line.strip().split(",")[1:]] for line in f.readlines()]
-            self.train_set.targets = torch.tensor(labels)
+            self.train_set.targets = torch.tensor(labels)[:, :self.args.num_cl]
             if self.args.strategy == "Ord":
                 rng = np.random.default_rng(seed=1126)
                 train_noisy_labels = []
@@ -82,6 +84,39 @@ class ALDataModule(pl.LightningDataModule):
                 print(f"Total Noise Rate {self.args.type}", (self.train_set.targets != self.train_set.true_targets).float().mean())
                 self.train_set.targets = self.train_set.targets.view(-1, 1)
 
+        if self.args.cleaning:
+            clean = {"targets":[], "data":[], "true_targets":[]}
+            noise = {"targets":[], "data":[], "true_targets":[]}
+            for i in range(self.train_set.targets.shape[-1]):
+                print(f"Noise Rate {i}", (self.train_set.targets[:, i] == self.train_set.true_targets).float().mean().item())
+            print(f"Noise Rate Total", (self.train_set.targets == self.train_set.true_targets.unsqueeze(-1).expand_as(self.train_set.targets)).float().mean().item())
+            for i in range(len(self.train_set.targets)):
+                for cl in self.train_set.targets[i]:
+                    if cl == self.train_set.true_targets[i]:
+                        noise["data"].append(self.train_set.data[i])
+                        noise["targets"].append(cl.view(1))
+                        noise["true_targets"].append(self.train_set.true_targets[i])
+                    else:
+                        clean["data"].append(self.train_set.data[i])
+                        clean["targets"].append(cl.view(1))
+                        clean["true_targets"].append(self.train_set.true_targets[i])
+            for k in clean:
+                print("Clean", k, len(clean[k]))
+            for k in noise:
+                print("Noise", k, len(noise[k]))
+            noise_num = int(len(noise["data"]) * self.args.cleaning_rate)
+            idx = np.arange(len(noise["data"]))
+            np.random.shuffle(idx)
+            for ind in idx[noise_num:]:
+                clean["targets"].append(noise["targets"][ind])
+                clean["data"].append(noise["data"][ind])
+                clean["true_targets"].append(noise["true_targets"][ind])
+            print("Noise Rate", (len(noise["data"]) - noise_num) / len(clean["targets"]))
+            print("Total", len(clean["targets"]))
+            self.train_set.targets = clean["targets"]
+            self.train_set.data = clean["data"]
+            self.train_set.true_targets = clean["true_targets"]
+        
         idx = np.arange(len(self.train_set))
         np.random.shuffle(idx)
         self.train_idx = idx[: int(len(self.train_set) * (1 - self.args.valid_split))]

@@ -16,6 +16,10 @@ D_LIST = {
     "clmin20": Micro_ImageNet20, 
     "cifar10n": CIFAR10, 
     "cifar20n": CIFAR20, 
+    "olcifar10": CIFAR10, 
+    "olcifar20": CIFAR20,
+    "olmin10": Micro_ImageNet10, 
+    "olmin20": Micro_ImageNet20, 
 }
 
 def prepare_dataset(args):
