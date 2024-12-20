@@ -11,6 +11,10 @@ This is a tool to run auto labeling by VLM(llava-v1.6-mistral-7b-hf) on both com
 ### The comparison between FWD predictions learned from human-labeled and VLM-labeled datasets.
 
 #### ACLCIFAR10 Transition Matrix
+<img src="./docs/heatmap-aclcifar10.png" alt="ACLCIFAR10 Transition Matrix" width="500"/>
+
+
+#### ACLCIFAR10 Transition Matrix
 ![image](./docs/heatmap-aclcifar10.png)
 #### ACLCIFAR10 Testing Accuracy
 ![image](./docs/aclcifar10_acc.png)
