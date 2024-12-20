@@ -12,12 +12,8 @@ This is a tool to run auto labeling by VLM(llava-v1.6-mistral-7b-hf) on both com
 
 #### ACLCIFAR10 Transition Matrix
 <img src="./docs/heatmap-aclcifar10.png" alt="ACLCIFAR10 Transition Matrix" width="500"/>
-
-
-#### ACLCIFAR10 Transition Matrix
-![image](./docs/heatmap-aclcifar10.png)
 #### ACLCIFAR10 Testing Accuracy
-![image](./docs/aclcifar10_acc.png)
+<img src="./docs/aclcifar10_acc.png" alt="ACLCIFAR10 Testing Accuracy" width="500"/>
 #### CLCIFAR10 Transition Matrix
 ![image](./docs/heatmap-clcifar10.png)
 #### CLCIFAR10 Testing Accuracy
