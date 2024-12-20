@@ -14,22 +14,14 @@ This is a tool to run auto labeling by VLM(llava-v1.6-mistral-7b-hf) on both com
 
 | ACLCIFAR10 Transition Matrix | ACLCIFAR10 Testing Accuracy |
 |------------------------------|-----------------------------|
-| <img src="./docs/heatmap-aclcifar10.png" alt="ACLCIFAR10 Transition Matrix" width="400"/> | <img src="./docs/aclcifar10_acc.png" alt="ACLCIFAR10 Testing Accuracy" width="400"/> |
+| <img src="./docs/heatmap-aclcifar10.png" alt="ACLCIFAR10 Transition Matrix" width="300"/> | <img src="./docs/aclcifar10_acc.png" alt="ACLCIFAR10 Testing Accuracy" width="300"/> |
 
 
 #### CLCIFAR10 Transition Matrix & Testing Accuracy
 
 | CLCIFAR10 Transition Matrix | CLCIFAR10 Testing Accuracy |
 |-----------------------------|----------------------------|
-| <img src="./docs/heatmap-clcifar10.png" alt="CLCIFAR10 Transition Matrix" width="400"/> | <img src="./docs/clcifar10_acc.png" alt="CLCIFAR10 Testing Accuracy" width="400"/> |
-
-
-#### Visualization of Complementary Label Noise Levels and Results
-
-| Complementary Label Noise Levels Across Datasets | Result of Noisy Label Cleaning on ACLCIFAR10 | Result of Incremental CLs on ACLCIFAR10 |
-|--------------------------------------------------|---------------------------------------------|------------------------------------------|
-| <img src="./docs/noise_bar.png" alt="Complementary label noise levels across datasets" width="300"/> | <img src="./docs/fwd_cleaning.png" alt="Result of noisy label cleaning on ACLCIFAR10" width="300"/> | <img src="./docs/mcl.png" alt="Result of incremental CLs on ACLCIFAR10" width="300"/> |
-
+| <img src="./docs/heatmap-clcifar10.png" alt="CLCIFAR10 Transition Matrix" width="300"/> | <img src="./docs/clcifar10_acc.png" alt="CLCIFAR10 Testing Accuracy" width="300"/> |
 
 ### Performance of CLL algorithms with reducing biasedness approach
 
@@ -43,6 +35,12 @@ This is a tool to run auto labeling by VLM(llava-v1.6-mistral-7b-hf) on both com
 | **CPE-F**      | <u>70.81</u> ± 0.08                  | <u>69.10</u> ± 1.11             | **51.30** ± 2.91              | <u>48.98</u> ± 3.05            |
 | **CPE-T**      | 63.56 ± 0.53                    | 62.43 ± 1.21               | 47.76 ± 1.26                  | 43.00 ± 2.37              |
 
+
+#### Visualization of Complementary Label Noise Levels and Results
+
+| Complementary Label Noise Levels Across Datasets | Result of Noisy Label Cleaning on ACLCIFAR10 | Result of Incremental CLs on ACLCIFAR10 |
+|--------------------------------------------------|---------------------------------------------|------------------------------------------|
+| <img src="./docs/noise_bar.png" alt="Complementary label noise levels across datasets" width="280"/> | <img src="./docs/fwd_cleaning.png" alt="Result of noisy label cleaning on ACLCIFAR10" width="290"/> | <img src="./docs/mcl.png" alt="Result of incremental CLs on ACLCIFAR10" width="300"/> |
 
 ## Installation
 
