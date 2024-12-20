@@ -67,7 +67,6 @@ pip install -e .
 | ----------- | --------------- | ----------- | ------------------------------------------------------------ |
 | CIFAR10 | 10 | 3 x 32 x 32 | Colored images of different objects. |
 | CIFAR20     | 20              | 3 x 32 x 32 | Colored images of different objects. |
-| CIFAR20     | 100              | 3 x 32 x 32 | Colored images of different objects. |
 | Micro ImageNet10 | 10 | 3 x 64 x 64 | Contains images of 10 classes designed for computer vision research|
 | Micro ImageNet20 | 20 | 3 x 64 x 64 | Contains images of 20 classes designed for computer vision research|
 
