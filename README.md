@@ -38,9 +38,9 @@ This is a tool to run auto labeling by VLM(llava-v1.6-mistral-7b-hf) on both com
 
 #### Visualization of Complementary Label Noise Levels and Results
 
-| Complementary Label Noise Levels Across Datasets | Result of Noisy Label Cleaning on ACLCIFAR10 | Result of Incremental CLs on ACLCIFAR10 |
+| Complementary Label Noise <br> Levels Across Datasets | Result of Noisy Label <br> Cleaning on ACLCIFAR10 | Result of Incremental <br> CLs on ACLCIFAR10 |
 |--------------------------------------------------|---------------------------------------------|------------------------------------------|
-| <img src="./docs/noise_bar.png" alt="Complementary label noise levels across datasets" width="280"/> | <img src="./docs/fwd_cleaning.png" alt="Result of noisy label cleaning on ACLCIFAR10" width="290"/> | <img src="./docs/mcl.png" alt="Result of incremental CLs on ACLCIFAR10" width="300"/> |
+| <img src="./docs/noise_bar.png" alt="Complementary label noise levels across datasets" width="300"/> | <img src="./docs/fwd_cleaning.png" alt="Result of noisy label cleaning on ACLCIFAR10" width="300"/> | <img src="./docs/mcl.png" alt="Result of incremental CLs on ACLCIFAR10" width="300"/> |
 
 ## Installation
 
