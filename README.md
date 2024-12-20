@@ -6,24 +6,31 @@ This is a tool to run auto labeling by VLM(llava-v1.6-mistral-7b-hf) on both com
 
 ![image](./docs/VLM-label-process.png)
 
-## Result
+## Results and Analysis
 
 ### The comparison between FWD predictions learned from human-labeled and VLM-labeled datasets.
 
-#### ACLCIFAR10 Transition Matrix
-<img src="./docs/heatmap-aclcifar10.png" alt="ACLCIFAR10 Transition Matrix" width="500"/>
-#### ACLCIFAR10 Testing Accuracy
-<img src="./docs/aclcifar10_acc.png" alt="ACLCIFAR10 Testing Accuracy" width="500"/>
-#### CLCIFAR10 Transition Matrix
-![image](./docs/heatmap-clcifar10.png)
-#### CLCIFAR10 Testing Accuracy
-![image](./docs/clcifar10_acc.png)
-#### Complementary label noise levels across datasets
-![image](./docs/noise_bar.png)
-#### Result of noisy label cleaning on ACLCIFAR10.
-![image](./docs/fwd_cleaning.png)
-#### Result of ncremental CLs on ACLCIFAR10.
-![image](./docs/mcl.png)
+#### ACLCIFAR10 Transition Matrix & Testing Accuracy
+
+| ACLCIFAR10 Transition Matrix | ACLCIFAR10 Testing Accuracy |
+|------------------------------|-----------------------------|
+| <img src="./docs/heatmap-aclcifar10.png" alt="ACLCIFAR10 Transition Matrix" width="400"/> | <img src="./docs/aclcifar10_acc.png" alt="ACLCIFAR10 Testing Accuracy" width="400"/> |
+
+
+#### CLCIFAR10 Transition Matrix & Testing Accuracy
+
+| CLCIFAR10 Transition Matrix | CLCIFAR10 Testing Accuracy |
+|-----------------------------|----------------------------|
+| <img src="./docs/heatmap-clcifar10.png" alt="CLCIFAR10 Transition Matrix" width="400"/> | <img src="./docs/clcifar10_acc.png" alt="CLCIFAR10 Testing Accuracy" width="400"/> |
+
+
+#### Visualization of Complementary Label Noise Levels and Results
+
+| Complementary Label Noise Levels Across Datasets | Result of Noisy Label Cleaning on ACLCIFAR10 | Result of Incremental CLs on ACLCIFAR10 |
+|--------------------------------------------------|---------------------------------------------|------------------------------------------|
+| <img src="./docs/noise_bar.png" alt="Complementary label noise levels across datasets" width="300"/> | <img src="./docs/fwd_cleaning.png" alt="Result of noisy label cleaning on ACLCIFAR10" width="300"/> | <img src="./docs/mcl.png" alt="Result of incremental CLs on ACLCIFAR10" width="300"/> |
+
+
 ### Performance of CLL algorithms with reducing biasedness approach
 
 
