@@ -4,8 +4,6 @@
 
 This is a tool to run auto labeling by VLM(llava-v1.6-mistral-7b-hf) on both complementary label and ordinary label. It should associate with [libcll](https://github.com/ntucllab/libcll).　We have used this package effectively curates VLM-annotated datasets, achieving an improvement of 10\% performance over human-annotated datasets.
 
-Datasets are available at [this link](https://drive.google.com/file/d/182jS78hv0g1QIfHNnM8bCNZLpNiSXZ1F).
-
 ![image](./docs/VLM-label-process.png)
 
 ## Results and Analysis
@@ -84,6 +82,192 @@ pip install -e .
 | [MCL](https://arxiv.org/pdf/1912.12927.pdf)               | MAE, EXP, LOG    | Multiple Complementary Label learning with different errors (MAE, EXP, LOG) |
 
 For more information, please reference to [libcll](https://github.com/ntucllab/libcll).
+
+## Datasets
+
+This repo contains four datasets: ACLCIFAR10, ACLCIFAR20, ACLMicroImageNet10, and ACLMicroImageNet20 with auto labeling complementary labels for complementary label learning tasks.
+
+TL;DR: the download links to ACLCIFAR and ACLMicroImageNet dataset
+* ACLCIFAR10: [aclcifar10.pkl](https://drive.google.com/file/d/1Tn4-sidFRtJ_Q0M9EJXnUxeodp_hO-wF/view?usp=sharing) (149MB)
+* ACLCIFAR10-R: [aclcifar10r.pkl](https://drive.google.com/file/d/1SkA4A7Tn8nHx6xHfpE8XrcJ6FHveVH60/view?usp=sharing) (149MB)
+* ACLCIFAR20: [aclcifar20.pkl](https://drive.google.com/file/d/12MVz5gRKKXrznELt3NholwAmnvvCVJGh/view?usp=sharing) (151MB)
+* ACLMIN10: [aclmin10.pkl](https://drive.google.com/file/d/1mYCfykcbifm0WHdJzLCbuH4wiAloqL5Z/view?usp=sharing) (59MB)
+* ACLMIN10-R: [aclmin10r.pkl](https://drive.google.com/file/d/1g-c82-ntKlDHF3I6uRo8e6aFHS35RSXJ/view?usp=sharing) (59MB)
+* CLMicroImageNet20: [aclmin20.pkl](https://drive.google.com/file/d/1a8bD0Nu__eX1qq1ncuOhjsn46GY9wd5X/view?usp=sharing) (119MB)
+
+
+### ACLCIFAR10
+
+This Complementary labeled ACIFAR10 dataset contains auto-labeled complementary labels for all 50000 images in the training split of CIFAR10. The workers are from Amazon Mechanical Turk(https://www.mturk.com).
+For more details, please visit our paper at link.
+
+#### Dataset Structure
+
+ACLCIFAR10 Dataset download link: [aclcifar10.pkl](https://drive.google.com/file/d/1Tn4-sidFRtJ_Q0M9EJXnUxeodp_hO-wF/view?usp=sharing) (149MB)
+
+ACLCIFAR10-R Dataset download link: [aclcifar10r.pkl](https://drive.google.com/file/d/1SkA4A7Tn8nHx6xHfpE8XrcJ6FHveVH60/view?usp=sharing) (149MB)
+
+We use `pickle` package to save and load the dataset objects. Use the function `pickle.load` to load the dataset dictionary object `data` in Python.
+
+```python
+data = pickle.load(open("aclcifar10.pkl", "rb"))
+# keys of data: 'names', 'images', 'ord_labels', 'cl_labels'
+```
+
+`data` would be a dictionary object with four keys: `names`, `images`, `ord_labels`, `cl_labels`.
+
+* `names`: The list of filenames strings. This filenames are same as the ones in CIFAR10
+
+* `images`: A `numpy.ndarray` of size (32, 32, 3) representing the image data with 3 channels, 32*32 resolution.
+
+* `ord_labels`: The ordinary labels of the images, and they are labeled from 0 to 9 as follows:
+
+  0: airplane
+  1: automobile
+  2: bird
+  3: cat
+  4: deer
+  5: dog
+  6: frog
+  7: horse
+  8: ship
+  9: truck
+
+* `cl_labels`: Three complementary labels for each image.
+
+### CLCIFAR20
+
+This Complementary labeled CIFAR100 dataset contains auto-labeled complementary labels for all 50000 images in the training split of CIFAR100. We group 4-6 categories as a superclass according to [[1]](https://arxiv.org/abs/2110.12088) and collect the complementary labels of these 20 superclasses. The workers are from Amazon Mechanical Turk(https://www.mturk.com).
+
+#### Dataset Structure
+
+Dataset download link: [aclcifar20.pkl](https://drive.google.com/file/d/12MVz5gRKKXrznELt3NholwAmnvvCVJGh/view?usp=sharing) (151MB)
+
+We use `pickle` package to save and load the dataset objects. Use the function `pickle.load` to load the dataset dictionary object `data` in Python.
+
+```python
+data = pickle.load(open("aclcifar20.pkl", "rb"))
+# keys of data: 'names', 'images', 'ord_labels', 'cl_labels'
+```
+
+`data` would be a dictionary object with four keys: `names`, `images`, `ord_labels`, `cl_labels`.
+
+* `names`: The list of filenames strings. This filenames are same as the ones in CIFAR20
+
+* `images`: A `numpy.ndarray` of size (32, 32, 3) representing the image data with 3 channels, 32*32 resolution.
+
+* `ord_labels`: The ordinary labels of the images, and they are labeled from 0 to 19 as follows:
+
+  0: aquatic_mammals
+  1: fish
+  2: flowers
+  3: food_containers
+  4: fruit, vegetables and mushrooms
+  5: household electrical devices
+  6: household furniture
+  7: insects
+  8: large carnivores and bear
+  9: large man-made outdoor things
+  10: large natural outdoor scenes
+  11: large omnivores and herbivores
+  12: medium-sized mammals
+  13: non-insect invertebrates
+  14: people
+  15: reptiles
+  16: small mammals
+  17: trees
+  18: transportation vehicles
+  19: non-transportation vehicles
+
+* `cl_labels`: Three complementary labels for each image.
+
+### CLMicroImageNet10
+
+This Complementary labeled MicroImageNet10 dataset contains auto-labeled complementary labels for all 5000 images in the training split of TinyImageNet200. The workers are from Amazon Mechanical Turk(https://www.mturk.com). 
+
+For more details, please visit our paper at link.
+
+#### Dataset Structure
+
+ACLMIN10 Dataset download link: [aclmin10.pkl](https://drive.google.com/file/d/1mYCfykcbifm0WHdJzLCbuH4wiAloqL5Z/view?usp=sharing) (59MB)
+
+ACLMIN10-R Dataset download link: [aclmin10r.pkl](https://drive.google.com/file/d/1g-c82-ntKlDHF3I6uRo8e6aFHS35RSXJ/view?usp=sharing) (59MB)
+
+We use `pickle` package to save and load the dataset objects. Use the function `pickle.load` to load the dataset dictionary object `data` in Python.
+
+```python
+data = pickle.load(open("aclmin10.pkl", "rb"))
+# keys of data: 'names', 'images', 'ord_labels', 'cl_labels'
+```
+
+`data` would be a dictionary object with four keys: `names`, `images`, `ord_labels`, `cl_labels`.
+
+* `names`: The list of filenames strings. This filenames are same as the ones in MicroImageNet10
+
+* `images`: A `numpy.ndarray` of size (32, 32, 3) representing the image data with 3 channels, 32*32 resolution.
+
+* `ord_labels`: The ordinary labels of the images, and they are labeled from 0 to 9 as follows:
+
+  0: sulphur-butterfly
+  1: backpack
+  2: cardigan
+  3: kimono
+  4: magnetic-compass
+  5: oboe
+  6: scandal
+  7: torch
+  8: pizza
+  9: alp
+
+* `cl_labels`: Three complementary labels for each image.
+
+### CLMicroImageNet20
+
+This Complementary labeled MicroImageNet20 dataset contains auto-labeled complementary labels for all 10000 images in the training split of TinyImageNet200. The workers are from Amazon Mechanical Turk(https://www.mturk.com).
+
+For more details, please visit our paper at link.
+
+#### Dataset Structure
+
+Dataset download link: [aclmin20.pkl](https://drive.google.com/file/d/1a8bD0Nu__eX1qq1ncuOhjsn46GY9wd5X/view?usp=sharing) (119MB)
+
+We use `pickle` package to save and load the dataset objects. Use the function `pickle.load` to load the dataset dictionary object `data` in Python.
+
+```python
+data = pickle.load(open("clmicro_imagenet20_train.pkl", "rb"))
+# keys of data: 'names', 'images', 'ord_labels', 'cl_labels'
+```
+
+`data` would be a dictionary object with four keys: `names`, `images`, `ord_labels`, `cl_labels`.
+
+* `names`: The list of filenames strings. This filenames are same as the ones in MicroImageNet20
+
+* `images`: A `numpy.ndarray` of size (32, 32, 3) representing the image data with 3 channels, 32*32 resolution.
+
+* `ord_labels`: The ordinary labels of the images, and they are labeled from 0 to 19 as follows:
+
+  0: tailed frog
+  1: scorpion
+  2: snail
+  3: american lobster
+  4: tabby
+  5: persian cat
+  6: gazelle
+  7: chimpanzee
+  8: bannister
+  9: barrel
+  10: christmas stocking
+  11: gasmask
+  12: hourglass
+  13: iPod
+  14: scoreboard
+  15: snorkel
+  16: suspension bridge
+  17: torch
+  18: tractor
+  19: triumphal arch
+
+* `cl_labels`: Three complementary labels for each image.
 
 ## Running
 
