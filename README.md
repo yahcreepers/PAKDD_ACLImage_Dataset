@@ -4,6 +4,8 @@
 
 This is a tool to run auto labeling by VLM(llava-v1.6-mistral-7b-hf) on both complementary label and ordinary label. It should associate with [libcll](https://github.com/ntucllab/libcll).　We have used this package effectively curates VLM-annotated datasets, achieving an improvement of 10\% performance over human-annotated datasets.
 
+Datasets are available at [this link](https://drive.google.com/file/d/182jS78hv0g1QIfHNnM8bCNZLpNiSXZ1F).
+
 ![image](./docs/VLM-label-process.png)
 
 ## Results and Analysis
