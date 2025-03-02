@@ -98,7 +98,8 @@ TL;DR: the download links to ACLCIFAR and ACLMicroImageNet dataset
 
 ### ACLCIFAR10
 
-This Complementary labeled ACIFAR10 dataset contains auto-labeled complementary labels for all 50000 images in the training split of CIFAR10. The workers are from Amazon Mechanical Turk(https://www.mturk.com).
+This Complementary labeled CIFAR10 dataset contains auto-labeled complementary labels for all 50000 images in the training split of CIFAR10.
+
 For more details, please visit our paper at link.
 
 #### Dataset Structure
@@ -137,7 +138,7 @@ data = pickle.load(open("aclcifar10.pkl", "rb"))
 
 ### CLCIFAR20
 
-This Complementary labeled CIFAR100 dataset contains auto-labeled complementary labels for all 50000 images in the training split of CIFAR100. We group 4-6 categories as a superclass according to [[1]](https://arxiv.org/abs/2110.12088) and collect the complementary labels of these 20 superclasses. The workers are from Amazon Mechanical Turk(https://www.mturk.com).
+This Complementary labeled CIFAR100 dataset contains auto-labeled complementary labels for all 50000 images in the training split of CIFAR100. We group 4-6 categories as a superclass according to [[1]](https://arxiv.org/abs/2110.12088) and collect the complementary labels of these 20 superclasses.
 
 #### Dataset Structure
 
@@ -183,7 +184,7 @@ data = pickle.load(open("aclcifar20.pkl", "rb"))
 
 ### CLMicroImageNet10
 
-This Complementary labeled MicroImageNet10 dataset contains auto-labeled complementary labels for all 5000 images in the training split of TinyImageNet200. The workers are from Amazon Mechanical Turk(https://www.mturk.com). 
+This Complementary labeled MicroImageNet10 dataset contains auto-labeled complementary labels for all 5000 images in the training split of TinyImageNet200.
 
 For more details, please visit our paper at link.
 
@@ -223,7 +224,7 @@ data = pickle.load(open("aclmin10.pkl", "rb"))
 
 ### CLMicroImageNet20
 
-This Complementary labeled MicroImageNet20 dataset contains auto-labeled complementary labels for all 10000 images in the training split of TinyImageNet200. The workers are from Amazon Mechanical Turk(https://www.mturk.com).
+This Complementary labeled MicroImageNet20 dataset contains auto-labeled complementary labels for all 10000 images in the training split of TinyImageNet200.
 
 For more details, please visit our paper at link.
 
