@@ -1,4 +1,4 @@
-# Auto Labeling
+# PAKDD ACLImage Dataset
 
 ## Introduction
 
@@ -280,27 +280,27 @@ You can change it to your own prompt by modifying `models/llava_next.py`
 
 ```
 python main.py \
---model llava \
---dataset cifar10 \
---batch_size 8 \
---seed 1126 \
---num_rounds 3 \
---output_dir logs/ \
---auto_cl \ # collecting complementary labels or ordinary labels
---long_label # using whole label names instead of only one word abbreviation
+    --model llava \
+    --dataset cifar10 \
+    --batch_size 8 \
+    --seed 1126 \
+    --num_rounds 3 \
+    --output_dir logs/ \
+    --auto_cl \ # collecting complementary labels or ordinary labels
+    --long_label # using whole label names instead of only one word abbreviation
 ```
 
 #### Ordinary Label
 
 ```
 python main.py \
---model llava \
---dataset cifar10 \
---batch_size 8 \
---seed 1126 \
---num_rounds 3 \
---output_dir logs/ \
---long_label # using whole label names instead of only one word abbreviation
+    --model llava \
+    --dataset cifar10 \
+    --batch_size 8 \
+    --seed 1126 \
+    --num_rounds 3 \
+    --output_dir logs/ \
+    --long_label # using whole label names instead of only one word abbreviation
 ```
 
 ### For Training
