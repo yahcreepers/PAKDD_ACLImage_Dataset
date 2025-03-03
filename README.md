@@ -136,7 +136,7 @@ data = pickle.load(open("aclcifar10.pkl", "rb"))
 
 * `cl_labels`: Three complementary labels for each image.
 
-### CLCIFAR20
+### ACLCIFAR20
 
 This Complementary labeled CIFAR100 dataset contains auto-labeled complementary labels for all 50000 images in the training split of CIFAR100. We group 4-6 categories as a superclass according to [[1]](https://arxiv.org/abs/2110.12088) and collect the complementary labels of these 20 superclasses.
 
@@ -182,7 +182,7 @@ data = pickle.load(open("aclcifar20.pkl", "rb"))
 
 * `cl_labels`: Three complementary labels for each image.
 
-### CLMicroImageNet10
+### ACLMicroImageNet10
 
 This Complementary labeled MicroImageNet10 dataset contains auto-labeled complementary labels for all 5000 images in the training split of TinyImageNet200.
 
@@ -222,7 +222,7 @@ data = pickle.load(open("aclmin10.pkl", "rb"))
 
 * `cl_labels`: Three complementary labels for each image.
 
-### CLMicroImageNet20
+### ACLMicroImageNet20
 
 This Complementary labeled MicroImageNet20 dataset contains auto-labeled complementary labels for all 10000 images in the training split of TinyImageNet200.
 
